@@ -1,0 +1,39 @@
+DirectoryIndex index.html index.php
+
+# Chuẩn MIME & tua nhạc mượt trên Hostinger (LiteSpeed / Apache)
+<IfModule mod_mime.c>
+  AddType audio/mpeg .mp3
+  AddType audio/wav .wav
+  AddType audio/ogg .ogg
+  AddType audio/mp4 .m4a
+  AddType audio/aac .aac
+  AddType audio/flac .flac
+  AddType application/json .json
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(mp3|wav|ogg|m4a|aac|flac)$">
+    Header set Accept-Ranges "bytes"
+  </FilesMatch>
+  <FilesMatch "^site-db\.json$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# Tăng giới hạn dung lượng upload file MP3 trên LiteSpeed / Apache PHP
+<IfModule LiteSpeed>
+  php_value upload_max_filesize 64M
+  php_value post_max_size 64M
+  php_value max_execution_time 300
+</IfModule>
+
+# Chặn truy cập file nội bộ
+<FilesMatch "\.(ps1|ini)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+  </IfModule>
+</FilesMatch>

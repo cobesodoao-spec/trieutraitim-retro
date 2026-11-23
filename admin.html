@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1120" />
+  <title>AdminCP - Quản Trị Triệu Trái Tim (trieutraitim.info)</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <!-- ==================== MÀN HÌNH ĐĂNG NHẬP ADMINCP ==================== -->
+  <div id="login-screen" class="login-overlay" style="display:none;">
+    <div class="login-box">
+      <div class="login-header">
+        <span>🔐 Đăng Nhập Bảng Quản Trị AdminCP</span>
+        <a href="index.html" style="color:#fff;font-size:11px;text-decoration:underline;">← Về Trang Nhạc</a>
+      </div>
+      <form id="login-form" class="login-body">
+        <div class="login-row">
+          <label for="login-user">Tài khoản Webmaster:</label>
+          <input id="login-user" class="retro-input" type="text" value="admin" autocomplete="username" required />
+        </div>
+        <div class="login-row">
+          <label for="login-pass">Mật khẩu:</label>
+          <input id="login-pass" class="retro-input" type="password" value="123456" autocomplete="current-password" required />
+        </div>
+        <div id="login-error" style="color:#cc0000;font-weight:bold;margin-bottom:8px;display:none;"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <button type="submit" class="acp-btn acp-btn-primary">✔ Đăng Nhập AdminCP</button>
+          <a href="index.html" class="acp-btn">Xem Trang Nghe Nhạc</a>
+        </div>
+        <div class="login-hint">
+          💡 <b>Tài khoản mặc định:</b> <code>admin</code> / Mật khẩu: <code>123456</code><br/>
+          (Bạn có thể đổi mật khẩu mới trong tab <b>Hệ Thống &amp; Kho MP3</b>).
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== KHUNG CHÍNH ADMIN CONTROL PANEL ==================== -->
+  <div id="admin-app" class="admin-wrapper" style="display:none;">
+    <header class="admin-topbar">
+      <div>
+        <h1>⚙ Triệu Trái Tim . Info — Webmaster AdminCP (v2.08)</h1>
+        <p>Quản lý toàn diện Playlist, Upload nhạc MP3 trực tiếp, Cấu hình Giao diện, Yahoo &amp; Chuyên mục hai cột</p>
+      </div>
+      <div class="admin-top-actions">
+        <span id="server-mode-badge" class="server-badge">● Đang kiểm tra...</span>
+        <a href="index.html" class="acp-btn">🎵 Mở Trang Nghe Nhạc</a>
+        <button id="btn-logout" type="button" class="acp-btn acp-btn-danger">Đăng xuất</button>
+      </div>
+    </header>
+
+    <!-- Thanh chuyển Tab -->
+    <nav class="admin-tabs">
+      <button type="button" class="admin-tab-btn active" data-tab="tab-songs">🎵 Quản Lý Nhạc &amp; Upload MP3 (<span id="song-count-badge">0</span>)</button>
+      <button type="button" class="admin-tab-btn" data-tab="tab-settings">🎨 Cấu Hình Giao Diện &amp; Yahoo</button>
+      <button type="button" class="admin-tab-btn" data-tab="tab-menus">📚 Menu Cột Trái / Cột Phải</button>
+      <button type="button" class="admin-tab-btn" data-tab="tab-system">💾 Kho File MP3 &amp; Hệ Thống</button>
+    </nav>
+
+    <main class="admin-content">
+      <!-- ====================================================================
+           TAB 1: QUẢN LÝ BÀI HÁT & UPLOAD MP3
+           ==================================================================== -->
+      <section id="tab-songs" class="tab-pane active">
+        <!-- 1A. Khung Kéo Thả Upload Hàng Loạt File MP3 -->
+        <div class="acp-panel">
+          <div class="acp-panel-header">
+            <span>✳ Upload Nhanh Nhiều File Nhạc MP3 Cùng Lúc (Kéo Thả Hoặc Chọn File)</span>
+            <span style="font-size:11px;font-weight:normal;">Hỗ trợ .mp3, .wav, .ogg, .m4a — Tự động lưu vào thư mục uploads/</span>
+          </div>
+          <div class="acp-panel-body">
+            <input id="bulk-mp3-input" type="file" accept="audio/*" multiple style="display:none;" />
+            <div id="bulk-dropzone" class="mp3-dropzone">
+              <div style="font-size:15px;font-weight:bold;color:#0b56a6;margin-bottom:4px;">
+                📂 Kéo thả các file .MP3 vào đây hoặc Bấm để chọn nhiều file nhạc từ máy tính
+              </div>
+              <div style="color:#466c94;font-size:11.5px;">
+                Mẹo đặt tên file: <code>Tên bài hát - Tên ca sĩ.mp3</code> sẽ được tự động tách chuẩn Tên Bài &amp; Ca Sĩ và đo thời lượng tự động!
+              </div>
+            </div>
+            <div id="bulk-progress-wrap" class="upload-progress-wrap">
+              <div id="bulk-progress-text" style="font-weight:bold;margin-bottom:4px;color:#0e5c22;">Đang tải lên...</div>
+              <div class="xp-progress-track">
+                <div id="bulk-progress-fill" class="xp-progress-fill"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1B. Form Thêm Mới / Chỉnh Sửa Chi Tiết Bài Hát -->
+        <div id="song-editor-panel" class="acp-panel">
+          <div class="acp-panel-header">
+            <span id="song-form-heading">✳ Thêm Bài Hát Mới Vào Playlist</span>
+            <button id="btn-reset-song-form" type="button" class="acp-btn acp-btn-sm">+ Chuyển về Thêm Bài Mới</button>
+          </div>
+          <form id="song-form" class="acp-panel-body">
+            <input id="song-edit-id" type="hidden" value="" />
+
+            <div class="form-grid-3">
+              <div class="field-group">
+                <label for="song-title">Tên bài hát (chữ xanh đậm trên Playlist) *</label>
+                <input id="song-title" class="retro-input" type="text" placeholder="Ví dụ: Mùa Đông Không Lạnh" required />
+              </div>
+              <div class="field-group">
+                <label for="song-artist">Ca sĩ / Ghi chú kèm theo (chữ đỏ nâu) *</label>
+                <input id="song-artist" class="retro-input" type="text" placeholder="Ví dụ: Akira Phan hoặc lời nhắn kỷ niệm..." required />
+              </div>
+              <div class="field-group">
+                <label for="song-duration">Thời lượng (giây hoặc mm:ss)</label>
+                <input id="song-duration" class="retro-input" type="text" value="03:30" placeholder="03:30" />
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="field-group">
+                <label for="song-real-singer">Tên ca sĩ hiển thị trên màn hình LCD đen</label>
+                <input id="song-real-singer" class="retro-input" type="text" placeholder="Để trống sẽ dùng ô Ca sĩ ở trên" />
+              </div>
+
+              <div class="field-group">
+                <label for="song-audio-url">Nguồn File MP3 (Upload từ máy hoặc dán URL trực tiếp)</label>
+                <div class="mp3-source-row">
+                  <input id="song-audio-url" class="retro-input" type="text" placeholder="uploads/ten-bai.mp3 hoặc https://... (để trống = phát hòa tấu)" />
+                  <input id="single-mp3-input" type="file" accept="audio/*" style="display:none;" />
+                  <button id="btn-pick-single-mp3" type="button" class="acp-btn" style="white-space:nowrap;">📤 Upload MP3</button>
+                  <button id="btn-clear-mp3" type="button" class="acp-btn acp-btn-danger acp-btn-sm" title="Gỡ đường dẫn MP3">✕</button>
+                </div>
+                <div id="single-upload-status" style="font-size:11px;color:#0f6b28;margin-top:3px;"></div>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="song-lyrics">Lời bài hát &amp; Lời nhắn kỷ niệm (hiện ở hộp Lời bài hát)</label>
+              <textarea id="song-lyrics" class="retro-textarea" rows="3" placeholder="Nhập lời bài hát hoặc cảm nhận về ca khúc này..."></textarea>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;">
+              <div style="display:flex;gap:8px;align-items:center;">
+                <button id="btn-save-song" type="submit" class="acp-btn acp-btn-primary">💾 Lưu Bài Hát Vào Playlist</button>
+                <button id="btn-cancel-edit" type="button" class="acp-btn" style="display:none;">Hủy sửa</button>
+              </div>
+              <span style="font-size:11px;color:#4f7094;">Mẹo: Bấm nút <b>"✏ Sửa / Gắn MP3"</b> ở bảng dưới để gắn file MP3 thật cho bất kỳ bài hát cũ nào!</span>
+            </div>
+          </form>
+        </div>
+
+        <!-- 1C. Bảng Danh Sách Playlist Hiện Tại -->
+        <div class="acp-panel">
+          <div class="acp-panel-header">
+            <span>✳ Danh Sách Bài Hát Trên Trang Chủ</span>
+            <span style="font-size:11px;font-weight:normal;">Thay đổi được đồng bộ tức thì sang tab nghe nhạc</span>
+          </div>
+          <div class="acp-panel-body">
+            <!-- Thanh nghe thử MP3 trực tiếp trong Admin -->
+            <div id="admin-preview-bar" class="preview-audio-bar" style="display:none;">
+              <strong id="admin-preview-label" style="color:#0b4a8c;">♪ Nghe thử:</strong>
+              <audio id="admin-preview-audio" controls></audio>
+              <button id="btn-close-preview" type="button" class="acp-btn acp-btn-sm">Đóng</button>
+            </div>
+
+            <div class="song-filter-bar">
+              <div style="display:flex;gap:8px;align-items:center;flex:1;">
+                <input id="song-search-input" class="retro-input" type="text" placeholder="🔍 Tìm tên bài hát hoặc ca sĩ..." style="max-width:290px;" />
+                <select id="song-type-filter" class="retro-select-input" style="max-width:190px;">
+                  <option value="all">Tất cả bài hát</option>
+                  <option value="mp3">Chỉ bài có file MP3 thật</option>
+                  <option value="synth">Chỉ bài nhạc hòa tấu</option>
+                </select>
+              </div>
+              <div style="font-size:11.5px;color:#355d87;">
+                Bài mở đầu mặc định: <b id="default-song-summary">#2</b>
+              </div>
+            </div>
+
+            <table class="acp-table">
+              <thead>
+                <tr>
+                  <th style="width:44px;">STT</th>
+                  <th>Tên Bài Hát &amp; Ca Sĩ / Ghi Chú</th>
+                  <th style="width:115px;">Nguồn Nhạc</th>
+                  <th style="width:68px;">Thời Lượng</th>
+                  <th style="width:270px;">Thao Tác Quản Trị</th>
+                </tr>
+              </thead>
+              <tbody id="admin-songs-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 2: CẤU HÌNH GIAO DIỆN & YAHOO! MESSENGER
+           ==================================================================== -->
+      <section id="tab-settings" class="tab-pane">
+        <form id="settings-form" class="acp-panel">
+          <div class="acp-panel-header">
+            <span>✳ Cấu Hình Giao Diện Trang Chủ, Lời Chào Player &amp; Yahoo! Messenger</span>
+          </div>
+          <div class="acp-panel-body">
+            <div class="form-grid-2">
+              <div class="field-group">
+                <label for="st-page-title">Tiêu đề thẻ trình duyệt (&lt;title&gt;)</label>
+                <input id="st-page-title" class="retro-input" type="text" />
+              </div>
+              <div class="field-group">
+                <label for="st-player-greeting">Dòng chữ chạy màu tím hồng trên đầu Player</label>
+                <input id="st-player-greeting" class="retro-input" type="text" />
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="field-group">
+                <label for="st-brand-title">Tiêu đề lớn trên Banner</label>
+                <input id="st-brand-title" class="retro-input" type="text" />
+              </div>
+              <div class="field-group">
+                <label for="st-brand-subtitle">Dòng mô tả nhỏ dưới Banner</label>
+                <input id="st-brand-subtitle" class="retro-input" type="text" />
+              </div>
+            </div>
+
+            <div class="form-grid-3">
+              <div class="field-group">
+                <label for="st-yahoo-id">Yahoo! ID (hiện trên thanh tiêu đề cửa sổ chat)</label>
+                <input id="st-yahoo-id" class="retro-input" type="text" />
+              </div>
+              <div class="field-group">
+                <label for="st-yahoo-nick">Chữ hiển thị sau "YH!" ở cột phải (xuống dòng được)</label>
+                <textarea id="st-yahoo-nick" class="retro-textarea" rows="2"></textarea>
+              </div>
+              <div class="field-group">
+                <label for="st-start-offset">Giây bắt đầu mặc định (VD: 85 = 01:25)</label>
+                <input id="st-start-offset" class="retro-input" type="number" min="0" />
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="st-yahoo-welcome">Tin nhắn chào tự động trong hộp Chat Yahoo! Messenger</label>
+              <input id="st-yahoo-welcome" class="retro-input" type="text" />
+            </div>
+
+            <div class="form-grid-3">
+              <div class="field-group">
+                <label for="st-hit-counter">Số bộ đếm Thống Kê LCD (8 chữ số)</label>
+                <input id="st-hit-counter" class="retro-input" type="text" maxlength="10" />
+              </div>
+              <div class="field-group">
+                <label for="st-online-count">Số khách đang Online hiển thị</label>
+                <input id="st-online-count" class="retro-input" type="number" min="1" />
+              </div>
+              <div class="field-group" style="padding-top:18px;">
+                <label style="display:inline-flex;align-items:center;gap:6px;margin-right:12px;cursor:pointer;">
+                  <input id="st-collapse-banner" type="checkbox" /> Mặc định ẩn Banner (Chế độ ảnh gốc)
+                </label>
+                <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
+                  <input id="st-snow-fx" type="checkbox" /> Bật hiệu ứng tuyết &amp; nốt nhạc rơi
+                </label>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="field-group">
+                <label for="st-footer-1">Chân trang dòng 1</label>
+                <input id="st-footer-1" class="retro-input" type="text" />
+              </div>
+              <div class="field-group">
+                <label for="st-footer-2">Chân trang dòng 2</label>
+                <input id="st-footer-2" class="retro-input" type="text" />
+              </div>
+            </div>
+
+            <button type="submit" class="acp-btn acp-btn-primary">💾 Lưu Cấu Hình Trang Web</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ====================================================================
+           TAB 3: QUẢN LÝ MENU CỘT TRÁI, CỘT PHẢI & LIÊN KẾT NHANH
+           ==================================================================== -->
+      <section id="tab-menus" class="tab-pane">
+        <div class="acp-panel">
+          <div class="acp-panel-header">
+            <span>✳ Chỉnh Sửa Các Hộp Menu Hai Bên Cột &amp; Nội Dung Bài Viết</span>
+          </div>
+          <div class="acp-panel-body">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+              <label for="menu-section-select" style="font-weight:bold;">Chọn khối Menu cần chỉnh sửa:</label>
+              <select id="menu-section-select" class="retro-select-input" style="max-width:320px;font-weight:bold;">
+                <option value="leftBooks">📘 Tủ Sách Hay (Cột trái - icon :::)</option>
+                <option value="leftInfo">➕ Thông Tin &amp; Tiện Ích (Cột trái - dấu +)</option>
+                <option value="rightDiscover">🌟 Khám Phá (Cột phải - 20 chuyên mục dấu +)</option>
+                <option value="quickLinks">🔗 Liên Kết Nhanh (Hộp chọn cột trái)</option>
+              </select>
+            </div>
+
+            <!-- Form thêm / sửa mục menu -->
+            <form id="menu-item-form" style="background:#f5faff;border:1px solid #9ccbf5;padding:10px 12px;margin-bottom:12px;">
+              <input id="menu-edit-idx" type="hidden" value="-1" />
+              <div class="form-grid-2">
+                <div class="field-group">
+                  <label id="menu-label-caption" for="menu-item-label">Tên mục hiển thị trên cột menu *</label>
+                  <input id="menu-item-label" class="retro-input" type="text" placeholder="Nhập tên chuyên mục..." required />
+                </div>
+                <div id="menu-url-wrap" class="field-group" style="display:none;">
+                  <label for="menu-item-url">Địa chỉ URL liên kết (https://...)</label>
+                  <input id="menu-item-url" class="retro-input" type="text" placeholder="https://..." />
+                </div>
+              </div>
+              <div id="menu-content-wrap" class="field-group">
+                <label for="menu-item-content">Nội dung bài viết hiện trong Popup khi bấm vào (Để trống = dùng bài mẫu mặc định)</label>
+                <textarea id="menu-item-content" class="retro-textarea" rows="3" placeholder="Nhập nội dung truyện ngắn, bài viết khám phá hoặc thông tin..."></textarea>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button id="btn-save-menu-item" type="submit" class="acp-btn acp-btn-primary">💾 Lưu Mục Menu</button>
+                <button id="btn-cancel-menu-item" type="button" class="acp-btn" style="display:none;">Hủy sửa</button>
+              </div>
+            </form>
+
+            <table class="acp-table">
+              <thead>
+                <tr>
+                  <th style="width:50px;">STT</th>
+                  <th>Tên Mục Hiển Thị</th>
+                  <th>Nội Dung Riêng / Liên Kết</th>
+                  <th style="width:190px;">Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody id="menu-items-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 4: KẾT NỐI GITHUB CLOUD, KHO FILE MP3 & SAO LƯU HỆ THỐNG
+           ==================================================================== -->
+      <section id="tab-system" class="tab-pane">
+        <!-- Kết nối trực tiếp GitHub Repository để chạy online trên GitHub Pages -->
+        <div class="acp-panel">
+          <div class="acp-panel-header">
+            <span>☁ Kết Nối GitHub Cloud (Upload MP3 &amp; Lưu Playlist Trực Tiếp Lên GitHub Pages)</span>
+            <a href="https://github.com/settings/tokens/new?scopes=repo&description=TrieuTraiTim-AdminCP" target="_blank" rel="noopener noreferrer" class="acp-btn acp-btn-sm">🔑 Lấy GitHub Token nhanh</a>
+          </div>
+          <form id="github-cloud-form" class="acp-panel-body">
+            <p style="margin:0 0 10px;color:#274c77;line-height:1.5;">
+              Khi trang web chạy trên <b>GitHub Pages</b> (không qua máy chủ cục bộ), hãy kết nối kho GitHub bên dưới để mọi bài hát mới và file <code>.mp3</code> bạn upload trong AdminCP được đẩy thẳng vào thư mục <code>uploads/</code> &amp; <code>site-db.json</code> trên GitHub! <i>(Token chỉ lưu riêng trên trình duyệt máy bạn, tuyệt đối không đẩy lên mạng).</i>
+            </p>
+            <div class="form-grid-3">
+              <div class="field-group">
+                <label for="gh-owner">GitHub Username / Owner *</label>
+                <input id="gh-owner" class="retro-input" type="text" placeholder="Ví dụ: ten-github-cua-ban" />
+              </div>
+              <div class="field-group">
+                <label for="gh-repo">Tên Repository *</label>
+                <input id="gh-repo" class="retro-input" type="text" placeholder="trieutraitim-retro" />
+              </div>
+              <div class="field-group">
+                <label for="gh-branch">Nhánh (Branch)</label>
+                <input id="gh-branch" class="retro-input" type="text" value="main" placeholder="main" />
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="gh-token">GitHub Personal Access Token (quyền <code>repo</code> hoặc <code>Contents: Read &amp; Write</code>) *</label>
+              <input id="gh-token" class="retro-input" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx hoặc github_pat_..." autocomplete="off" />
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <button type="submit" class="acp-btn acp-btn-primary">☁ Kiểm Tra &amp; Lưu Kết Nối GitHub</button>
+              <button id="btn-disconnect-gh" type="button" class="acp-btn acp-btn-danger">Ngắt kết nối GitHub</button>
+              <span id="gh-conn-status" style="font-weight:bold;color:#0e5f24;"></span>
+            </div>
+          </form>
+        </div>
+
+        <!-- Kho file vật lý trong thư mục uploads/ -->
+        <div class="acp-panel">
+          <div class="acp-panel-header">
+            <span>✳ Kho Tệp Âm Thanh Đã Upload Lên Máy Chủ (Thư mục /uploads)</span>
+            <button id="btn-refresh-uploads" type="button" class="acp-btn acp-btn-sm">↻ Làm mới danh sách</button>
+          </div>
+          <div class="acp-panel-body">
+            <div id="uploads-folder-note" style="margin-bottom:8px;color:#345c85;">
+              Danh sách các file nhạc <code>.mp3 / .wav / .ogg / .m4a</code> đang lưu trực tiếp trên ổ cứng trong thư mục <code>uploads/</code>:
+            </div>
+            <table class="acp-table">
+              <thead>
+                <tr>
+                  <th>Tên File Trên Máy Chủ</th>
+                  <th style="width:110px;">Dung Lượng</th>
+                  <th style="width:155px;">Thời Gian Tải Lên</th>
+                  <th style="width:240px;">Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody id="uploads-list-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <!-- Sao lưu & Khôi phục dữ liệu -->
+          <div class="acp-panel">
+            <div class="acp-panel-header">
+              <span>✳ Sao Lưu / Nhập Dữ Liệu &amp; Khôi Phục Gốc</span>
+            </div>
+            <div class="acp-panel-body">
+              <p style="margin-top:0;">Xuất toàn bộ danh sách bài hát, lời nhạc, menu &amp; cấu hình ra file <code>.json</code> hoặc khôi phục lại giao diện gốc năm 2008:</p>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                <button id="btn-export-json" type="button" class="acp-btn">⬇ Xuất Bản Sao Lưu (.JSON)</button>
+                <input id="import-json-input" type="file" accept=".json,application/json" style="display:none;" />
+                <button id="btn-import-json" type="button" class="acp-btn">⬆ Nhập Bản Sao Lưu (.JSON)</button>
+                <button id="btn-reset-defaults" type="button" class="acp-btn acp-btn-danger">⚠ Khôi Phục Mặc Định Gốc 2008</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Đổi tài khoản / mật khẩu Admin -->
+          <div class="acp-panel">
+            <div class="acp-panel-header">
+              <span>✳ Đổi Tài Khoản &amp; Mật Khẩu AdminCP</span>
+            </div>
+            <form id="auth-change-form" class="acp-panel-body">
+              <div class="field-group">
+                <label for="auth-new-user">Tên tài khoản Admin:</label>
+                <input id="auth-new-user" class="retro-input" type="text" required />
+              </div>
+              <div class="field-group">
+                <label for="auth-new-pass">Mật khẩu mới:</label>
+                <input id="auth-new-pass" class="retro-input" type="text" required />
+              </div>
+              <button type="submit" class="acp-btn acp-btn-primary">🔐 Cập Nhật Tài Khoản Admin</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Thông báo nổi góc phải dưới -->
+  <div id="acp-toast" class="acp-toast">✔ Đã lưu thay đổi!</div>
+
+  <script src="data.js"></script>
+  <script src="store.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

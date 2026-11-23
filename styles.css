@@ -1,0 +1,1125 @@
+/* ==========================================================================
+   Triệu Trái Tim (trieutraitim.info) - Giao diện Web Nghe Nhạc Xưa (2007-2009)
+   Font chuẩn thời Windows XP / Vista: Tahoma, Verdana, Arial
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Tahoma, Arial, Verdana, sans-serif;
+  font-size: 12px;
+  color: #1f3b6e;
+  /* Nền caro xanh nhạt + họa tiết nốt nhạc chìm đặc trưng */
+  background-color: #eef7ff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cdefs%3E%3Cpattern id='grid' width='20' height='20' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 20 0 L 0 0 0 20' fill='none' stroke='%23d8ecff' stroke-width='1'/%3E%3Cpath d='M 10 0 L 10 20 M 0 10 L 20 10' fill='none' stroke='%23e7f3ff' stroke-width='0.6'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='160' height='160' fill='%23f4faff'/%3E%3Crect width='160' height='160' fill='url(%23grid)'/%3E%3Cg fill='%23cbe4fb' fill-opacity='0.65' font-family='Arial, sans-serif'%3E%3Ctext x='18' y='42' font-size='28' transform='rotate(-14 18 42)'%3E%E2%99%AB%3C/text%3E%3Ctext x='108' y='34' font-size='22' transform='rotate(12 108 34)'%3E%E2%99%AA%3C/text%3E%3Ctext x='64' y='96' font-size='32' transform='rotate(-8 64 96)'%3E%E2%99%AC%3C/text%3E%3Ctext x='122' y='132' font-size='26' transform='rotate(16 122 132)'%3E%E2%99%AA%3C/text%3E%3Ctext x='20' y='138' font-size='21' transform='rotate(-18 20 138)'%3E%E2%99%A9%3C/text%3E%3Ccircle cx='88' cy='46' r='3' fill='%23d3e9fd'/%3E%3Ccircle cx='48' cy='135' r='2.5' fill='%23d3e9fd'/%3E%3C/g%3E%3C/svg%3E");
+  overflow-x: auto;
+}
+
+/* Snow / Music Note Floating Effect Container */
+#falling-fx {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  overflow: hidden;
+}
+
+.fx-particle {
+  position: absolute;
+  top: -24px;
+  color: #7ec4ff;
+  text-shadow: 0 0 4px #ffffff;
+  opacity: 0.7;
+  user-select: none;
+  animation: fallDown linear forwards;
+}
+
+@keyframes fallDown {
+  0% {
+    transform: translateY(-20px) translateX(0) rotate(0deg);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateY(50vh) translateX(18px) rotate(160deg);
+  }
+  100% {
+    transform: translateY(105vh) translateX(-14px) rotate(320deg);
+    opacity: 0.2;
+  }
+}
+
+/* ==========================================================================
+   Banner đầu trang kiểu Portal 2008 (Có thể thu gọn để giống hệt ảnh chụp)
+   ========================================================================== */
+.top-portal-wrapper {
+  width: 1004px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-left: 1px solid #6ec6ff;
+  border-right: 1px solid #6ec6ff;
+}
+
+.retro-banner {
+  position: relative;
+  height: 82px;
+  background: linear-gradient(180deg, #56b8ff 0%, #9ad8ff 52%, #dff3ff 100%);
+  border-bottom: 1px solid #5bb6f5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  overflow: hidden;
+}
+
+.retro-banner::before {
+  content: "♪  ♫  ♬  ♥  ♪  ♫";
+  position: absolute;
+  right: 220px;
+  top: 8px;
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 8px;
+  pointer-events: none;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 1;
+}
+
+.heart-emblem {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ff9ec6, #e91e63 70%, #9e0b41 100%);
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.9), inset 0 2px 4px rgba(255,255,255,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 24px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.35);
+}
+
+.brand-text h1 {
+  margin: 0;
+  font-family: "Trebuchet MS", Tahoma, sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow:
+    0 0 6px #0066cc,
+    1px 1px 0 #004c99,
+    -1px -1px 0 #004c99,
+    1px -1px 0 #004c99,
+    -1px 1px 0 #004c99;
+  letter-spacing: 0.5px;
+}
+
+.brand-text p {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: #0b4a8c;
+  font-weight: bold;
+}
+
+.banner-tools {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.banner-mini-btns {
+  display: flex;
+  gap: 6px;
+}
+
+.retro-chip-btn {
+  background: linear-gradient(180deg, #ffffff 0%, #d8eeff 100%);
+  border: 1px solid #4ca6e8;
+  border-radius: 3px;
+  color: #0b4c8c;
+  font-family: Tahoma, sans-serif;
+  font-size: 11px;
+  padding: 2px 7px;
+  cursor: pointer;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.08);
+}
+
+.retro-chip-btn:hover {
+  background: linear-gradient(180deg, #fffef0 0%, #ffe8a3 100%);
+  border-color: #d99b26;
+  color: #8a4500;
+}
+
+.retro-nav-bar {
+  height: 27px;
+  background: linear-gradient(180deg, #6bd0ff 0%, #2496ee 50%, #1078d4 51%, #3aa6f7 100%);
+  border-bottom: 1px solid #49a7ec;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 11px;
+}
+
+.retro-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.retro-nav-links a {
+  color: #ffffff;
+  text-decoration: none;
+  padding: 4px 8px;
+  text-shadow: 0 1px 1px rgba(0, 52, 102, 0.8);
+  border-radius: 2px;
+}
+
+.retro-nav-links a:hover,
+.retro-nav-links a.active {
+  background: rgba(255, 255, 255, 0.24);
+  color: #ffff99;
+}
+
+.retro-nav-sep {
+  color: #9be0ff;
+  font-weight: normal;
+}
+
+.top-portal-wrapper.collapsed {
+  display: none;
+}
+
+/* ==========================================================================
+   Khung 3 Cột Chính (Chuẩn bố cục trieutraitim.info trong ảnh)
+   ========================================================================== */
+.page-shell {
+  width: 1004px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 176px 640px 188px;
+  border-left: 1px solid #6ec6ff;
+  border-right: 1px solid #6ec6ff;
+  border-bottom: 2px solid #5cb8ff;
+  background: transparent;
+  min-height: 100vh;
+}
+
+/* Hai cột bên giữ nền caro + nốt nhạc và đường kẻ xanh lơ dọc */
+.sidebar-left {
+  padding: 4px 8px 18px 8px;
+  border-right: 1px solid #6dc5ff;
+  background-color: rgba(244, 250, 255, 0.55);
+}
+
+.sidebar-right {
+  padding: 4px 6px 18px 6px;
+  border-left: 1px solid #6dc5ff;
+  background-color: rgba(244, 250, 255, 0.55);
+}
+
+/* Các khối hộp menu hai bên */
+.side-box {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid #7ec7f7;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 2px rgba(80, 160, 220, 0.12);
+}
+
+.side-box-header {
+  height: 22px;
+  background: linear-gradient(180deg, #b8ebff 0%, #58c4ff 45%, #27a9f5 52%, #82d7ff 100%);
+  border-bottom: 1px solid #64bdf5;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  text-shadow: 0 1px 2px #0c68a8, 0 0 3px #0c68a8;
+  letter-spacing: 0.2px;
+  user-select: none;
+}
+
+.side-box-header .spark {
+  color: #d9f6ff;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.side-list {
+  list-style: none;
+  margin: 0;
+  padding: 5px 5px 6px 5px;
+}
+
+.side-list li {
+  margin: 0;
+  padding: 2px 1px;
+  line-height: 1.38;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.side-list a {
+  color: #2c67a0;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+}
+
+.side-list a:hover {
+  color: #d93600;
+  text-decoration: underline;
+}
+
+/* Icon 6 chấm kiểu menu Sách xưa (:::) */
+.dots-icon {
+  display: inline-grid;
+  grid-template-columns: repeat(3, 2px);
+  grid-template-rows: repeat(2, 2px);
+  gap: 1.5px;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+
+.dots-icon i {
+  display: block;
+  width: 2px;
+  height: 2px;
+  background: #4292c6;
+}
+
+.dots-icon i:nth-child(1),
+.dots-icon i:nth-child(4) {
+  background: #e67e22;
+}
+
+/* Dấu cộng xanh đậm ở cột Thông Tin & Khám Phá */
+.plus-icon {
+  color: #0b67b2;
+  font-weight: 900;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1;
+  margin-right: 1px;
+  text-shadow: 0 0 1px rgba(11, 103, 178, 0.35);
+}
+
+/* Liên Kết Nhanh select box */
+.quick-link-body {
+  padding: 8px 5px 9px;
+  text-align: center;
+  background: #ffffff;
+}
+
+.retro-select {
+  width: 96%;
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 11px;
+  color: #0d3d6e;
+  border: 1px solid #7f9db9;
+  background: #ffffff;
+  padding: 1px 2px;
+  cursor: pointer;
+}
+
+/* Hộp Liên Hệ Yahoo! Messenger */
+.yahoo-box-body {
+  padding: 10px 6px 12px;
+  text-align: center;
+  background: #ffffff;
+}
+
+.yh-badge {
+  display: inline-flex;
+  align-items: center;
+  width: 138px;
+  height: 31px;
+  padding: 2px 7px;
+  border-radius: 15px;
+  border: 1px solid #767676;
+  background: linear-gradient(180deg, #ffffff 0%, #e4e4e4 46%, #c6c6c6 52%, #eeeeee 100%);
+  box-shadow: inset 0 1px 0 #ffffff, 0 1px 2px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  text-decoration: none;
+  user-select: none;
+  transition: transform 0.08s ease;
+}
+
+.yh-badge:hover {
+  border-color: #3a6ea5;
+  box-shadow: inset 0 1px 0 #ffffff, 0 0 5px rgba(45, 132, 230, 0.45);
+}
+
+.yh-badge:active {
+  transform: translateY(1px);
+}
+
+.yh-smiley {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  margin-right: 5px;
+}
+
+.yh-badge-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.05;
+  text-align: left;
+}
+
+.yh-online-title {
+  font-family: Arial, Tahoma, sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+  color: #203790;
+  letter-spacing: -0.2px;
+}
+
+.yh-online-sub {
+  font-family: Tahoma, sans-serif;
+  font-size: 8.5px;
+  color: #4f5d87;
+}
+
+.yh-offline-title {
+  font-family: Arial, Tahoma, sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+  color: #333333;
+  letter-spacing: -0.2px;
+}
+
+.yh-offline-sub {
+  font-family: Tahoma, sans-serif;
+  font-size: 9px;
+  color: #555555;
+}
+
+.yh-nick {
+  margin: 5px 0 6px;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: bold;
+  line-height: 1.25;
+}
+
+.yh-nick .yh-prefix {
+  color: #cc1111;
+}
+
+.yh-nick .yh-name {
+  color: #2a6ea6;
+}
+
+/* Bộ đếm lượt truy cập cổ điển */
+.hit-counter-body {
+  padding: 8px 6px;
+  text-align: center;
+  background: #ffffff;
+  font-size: 11px;
+  color: #355c87;
+}
+
+.lcd-counter {
+  display: inline-flex;
+  gap: 1px;
+  background: #111;
+  padding: 2px 4px;
+  border: 1px inset #888;
+  border-radius: 2px;
+  margin-bottom: 5px;
+}
+
+.lcd-counter span {
+  background: #0b1c0b;
+  color: #39ff14;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 1px 3px;
+}
+
+/* ==========================================================================
+   Cột Giữa: Flash / Windows Media Player Skin + Playlist
+   ========================================================================== */
+.center-main {
+  background: #ffffff;
+  padding: 0 14px 18px 14px;
+  position: relative;
+}
+
+/* Khung trình phát nhạc WMP / Flash cổ điển */
+.wmp-flash-player {
+  width: 100%;
+  margin-top: 0;
+  border: 1px solid #cfd9e8;
+  border-top: none;
+  background: #e9eff8;
+  box-shadow: 0 2px 5px rgba(130, 155, 195, 0.25);
+  user-select: none;
+}
+
+/* Thanh chữ tím hồng trên cùng của Player */
+.player-greeting-bar {
+  height: 18px;
+  background: linear-gradient(180deg, #2b1d3d 0%, #14101f 100%);
+  color: #d742aa;
+  font-size: 11px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0 8px;
+  border-bottom: 1px solid #353535;
+}
+
+.marquee-track {
+  white-space: nowrap;
+  display: inline-block;
+  animation: retroMarquee 18s linear infinite;
+}
+
+.player-greeting-bar:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes retroMarquee {
+  0% { transform: translateX(45%); }
+  100% { transform: translateX(-55%); }
+}
+
+/* Màn hình LCD đen hiển thị thời gian 01:25 / 03:27 */
+.player-lcd-bar {
+  height: 23px;
+  background: #000000;
+  color: #67b846;
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  border-bottom: 1px solid #596575;
+}
+
+.lcd-time {
+  color: #6bc748;
+  letter-spacing: 0.3px;
+}
+
+.lcd-song-status {
+  color: #7ea6d8;
+  font-size: 11px;
+  max-width: 72%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Thanh trượt tiến độ bạc + xanh lá bóng */
+.player-seek-strip {
+  height: 22px;
+  background: linear-gradient(180deg, #9aa6b8 0%, #eef3fa 35%, #ffffff 70%, #dfe7f4 100%);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid #e2eaf6;
+}
+
+.seek-groove {
+  position: relative;
+  width: 100%;
+  height: 9px;
+  background: linear-gradient(180deg, #8e99a8 0%, #c5cedb 45%, #e6ecf5 100%);
+  border: 1px solid #7d8897;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.35);
+}
+
+.seek-fill {
+  height: 100%;
+  width: 39%;
+  border-radius: 4px 0 0 4px;
+  background: linear-gradient(180deg, #98ff73 0%, #44d41f 50%, #269b0b 55%, #5ce836 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.65);
+  pointer-events: none;
+}
+
+.seek-knob {
+  position: absolute;
+  top: 50%;
+  left: 39%;
+  transform: translate(-50%, -50%);
+  width: 19px;
+  height: 12px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #ffffff 0%, #d9e0ea 50%, #adb7c5 52%, #eef2f7 100%);
+  border: 1px solid #5a6575;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.35), inset 0 1px 0 #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+}
+
+.seek-knob::after {
+  content: "";
+  width: 4px;
+  height: 7px;
+  border-radius: 1px;
+  background: #2fb815;
+  box-shadow: 0 0 2px #5eff3b;
+}
+
+/* Cụm nút điều khiển bạc xanh bóng kiểu Windows Media Player 11 */
+.player-controls-deck {
+  height: 44px;
+  background: linear-gradient(180deg, #ffffff 0%, #e4ecfa 32%, #a8c1ea 62%, #cbdcf5 88%, #eef4fc 100%);
+  border-top: 1px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+}
+
+.deck-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Nút tròn bóng gương Aero / WMP */
+.orb-btn {
+  position: relative;
+  border-radius: 50%;
+  border: 1px solid #5875a3;
+  background: radial-gradient(circle at 50% 24%, #ffffff 0%, #dce9fc 38%, #8eaee0 72%, #b9d2f7 100%);
+  box-shadow:
+    0 1px 3px rgba(34, 62, 108, 0.42),
+    0 0 0 2px rgba(175, 202, 242, 0.55),
+    inset 0 1px 1px #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  color: #1f3b6d;
+  transition: filter 0.12s ease, transform 0.08s ease;
+}
+
+.orb-btn:hover {
+  filter: brightness(1.06);
+  border-color: #2c62b8;
+  box-shadow:
+    0 1px 4px rgba(25, 86, 185, 0.55),
+    0 0 6px rgba(102, 179, 255, 0.8),
+    inset 0 1px 2px #ffffff;
+}
+
+.orb-btn:active {
+  transform: scale(0.96);
+}
+
+.orb-play {
+  width: 34px;
+  height: 34px;
+  margin-right: 4px;
+}
+
+.orb-sm {
+  width: 24px;
+  height: 24px;
+}
+
+.orb-btn svg {
+  display: block;
+}
+
+/* Nhóm nút Prev + Next sát nhau giống hệt ảnh chụp */
+.transport-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 4px;
+  border-radius: 14px;
+  background: rgba(145, 173, 222, 0.25);
+}
+
+/* Cụm âm lượng xanh lá */
+.volume-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 4px;
+}
+
+.vol-groove {
+  position: relative;
+  width: 68px;
+  height: 6px;
+  background: linear-gradient(180deg, #8b98ad 0%, #cfd8e6 100%);
+  border: 1px solid #6f7f96;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.vol-fill {
+  height: 100%;
+  width: 78%;
+  background: linear-gradient(180deg, #98ff73 0%, #39c916 100%);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.vol-knob {
+  position: absolute;
+  top: 50%;
+  left: 78%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 15px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #ffffff 0%, #cfd7e3 50%, #9aa6b8 100%);
+  border: 1px solid #596577;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  cursor: grab;
+}
+
+/* Các nút tiện ích nhỏ bên phải thanh Player */
+.deck-right {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mini-wmp-btn {
+  background: linear-gradient(180deg, #ffffff 0%, #d7e5fb 55%, #b8cef0 100%);
+  border: 1px solid #6d8ab8;
+  border-radius: 3px;
+  color: #193b73;
+  font-family: Tahoma, sans-serif;
+  font-size: 10.5px;
+  font-weight: bold;
+  padding: 3px 6px;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 #fff;
+}
+
+.mini-wmp-btn:hover {
+  background: linear-gradient(180deg, #ffffff 0%, #eaf3ff 100%);
+  border-color: #366ec2;
+}
+
+.mini-wmp-btn.active {
+  background: linear-gradient(180deg, #d7ffd0 0%, #8be878 100%);
+  border-color: #2f8f1f;
+  color: #0e4a05;
+}
+
+/* ==========================================================================
+   Danh sách bài hát (Playlist) có thanh cuộn xám cổ điển + bông tuyết chìm
+   ========================================================================== */
+.playlist-viewport {
+  height: 492px;
+  overflow-y: scroll;
+  border-left: 1px solid #f0f0f0;
+  border-right: 1px solid #e3e3e3;
+  border-bottom: 1px solid #e3e3e3;
+  padding: 4px 10px 8px 14px;
+  /* Hoa tuyết chìm rất nhạt trên nền trắng giống ảnh */
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='220' viewBox='0 0 260 220'%3E%3Cg fill='%23eef4fa' font-family='Arial'%3E%3Ctext x='180' y='92' font-size='28'%3E%E2%9D%84%3C/text%3E%3Ctext x='52' y='186' font-size='22'%3E%E2%9D%84%3C/text%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Thanh cuộn kiểu Windows cổ điển trên trình duyệt hỗ trợ */
+.playlist-viewport::-webkit-scrollbar {
+  width: 15px;
+}
+
+.playlist-viewport::-webkit-scrollbar-track {
+  background: #f3f3f3;
+  border-left: 1px solid #dfdfdf;
+}
+
+.playlist-viewport::-webkit-scrollbar-thumb {
+  background: #c4c4c4;
+  border: 2px solid #f3f3f3;
+}
+
+.playlist-viewport::-webkit-scrollbar-thumb:hover {
+  background: #a6a6a6;
+}
+
+.playlist-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.playlist-row {
+  display: flex;
+  align-items: center;
+  padding: 11px 6px 11px 4px;
+  border-bottom: 1px solid #ededed;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.playlist-row:hover {
+  background-color: #f4faff;
+}
+
+.playlist-row.active {
+  background-color: #fafdff;
+}
+
+.track-index-cell {
+  width: 28px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 12px;
+  color: #b94a48;
+}
+
+/* Icon sóng nhạc 4 cột màu xanh da trời (ılıl) chuẩn bài số 2 trong ảnh */
+.eq-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+  width: 18px;
+}
+
+.eq-bars span {
+  display: block;
+  width: 3px;
+  background: linear-gradient(180deg, #35b8ff 0%, #0976d6 100%);
+  border-radius: 0.5px;
+  animation: eqBounce 0.65s ease-in-out infinite alternate;
+}
+
+.eq-bars span:nth-child(1) { height: 9px; animation-delay: 0.0s; }
+.eq-bars span:nth-child(2) { height: 5px; animation-delay: 0.18s; }
+.eq-bars span:nth-child(3) { height: 11px; animation-delay: 0.08s; }
+.eq-bars span:nth-child(4) { height: 7px; animation-delay: 0.26s; }
+
+.eq-bars.paused span {
+  animation-play-state: paused;
+}
+
+@keyframes eqBounce {
+  0% { height: 3px; }
+  100% { height: 12px; }
+}
+
+.track-text {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-title {
+  font-weight: bold;
+  color: #0b2c7a;
+}
+
+.playlist-row:hover .track-title {
+  color: #0050c8;
+  text-decoration: underline;
+}
+
+.track-dash {
+  color: #b64949;
+  margin: 0 4px;
+}
+
+.track-artist {
+  color: #bd4b4b;
+  font-weight: normal;
+  font-size: 12px;
+}
+
+.track-badge-local {
+  font-size: 10px;
+  color: #1c7d32;
+  background: #e7fbe9;
+  border: 1px solid #96dfa2;
+  padding: 0 4px;
+  border-radius: 2px;
+  margin-left: 6px;
+}
+
+/* Hộp Lời bài hát & Quà tặng âm nhạc bên dưới Playlist */
+.retro-extra-panel {
+  margin-top: 12px;
+  border: 1px solid #96cff8;
+  background: #f9fcff;
+}
+
+.retro-extra-header {
+  height: 24px;
+  background: linear-gradient(180deg, #dcf3ff 0%, #9cd8ff 100%);
+  border-bottom: 1px solid #8ac7f2;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #0d4880;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.retro-extra-body {
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #2b4466;
+  line-height: 1.6;
+  max-height: 180px;
+  overflow-y: auto;
+  white-space: pre-line;
+}
+
+/* Chân trang hoài niệm */
+.retro-footer {
+  margin-top: 14px;
+  padding-top: 8px;
+  border-top: 1px dashed #99cefa;
+  text-align: center;
+  font-size: 11px;
+  color: #4f7396;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   Cửa sổ Chat Yahoo! Messenger & Popup Đọc Bài Cột Bên
+   ========================================================================== */
+.yh-chat-window {
+  position: fixed;
+  right: 22px;
+  bottom: 14px;
+  width: 315px;
+  background: #ece9d8;
+  border: 2px solid #5f2580;
+  border-radius: 6px 6px 2px 2px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  z-index: 100;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.yh-chat-window.open {
+  display: flex;
+}
+
+.yh-chat-window.buzzing {
+  animation: yhBuzzShake 0.42s linear;
+}
+
+@keyframes yhBuzzShake {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(-8px, -4px); }
+  30% { transform: translate(8px, 4px); }
+  45% { transform: translate(-7px, 3px); }
+  60% { transform: translate(7px, -3px); }
+  75% { transform: translate(-4px, 2px); }
+}
+
+.yh-win-titlebar {
+  height: 28px;
+  background: linear-gradient(180deg, #9b4dca 0%, #682193 52%, #4e1473 100%);
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 11.5px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.yh-win-close {
+  background: #d94343;
+  border: 1px solid #fff;
+  color: #fff;
+  width: 18px;
+  height: 18px;
+  font-size: 11px;
+  line-height: 14px;
+  text-align: center;
+  border-radius: 2px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.yh-chat-history {
+  height: 175px;
+  background: #ffffff;
+  margin: 6px 6px 4px;
+  border: 1px solid #999;
+  padding: 6px 8px;
+  overflow-y: auto;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.yh-msg {
+  margin-bottom: 5px;
+}
+
+.yh-msg .sender-me {
+  font-weight: bold;
+  color: #0044aa;
+}
+
+.yh-msg .sender-bot {
+  font-weight: bold;
+  color: #7b1fa2;
+}
+
+.yh-msg .buzz-text {
+  font-weight: bold;
+  color: #d90000;
+}
+
+.yh-toolbar {
+  padding: 2px 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.yh-buzz-btn {
+  background: linear-gradient(180deg, #fff5cc 0%, #ffcc4d 100%);
+  border: 1px solid #b57600;
+  color: #990000;
+  font-weight: bold;
+  font-size: 10.5px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.yh-emo-btn {
+  background: #fff;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 1px 5px;
+}
+
+.yh-input-row {
+  display: flex;
+  gap: 4px;
+  padding: 4px 6px 7px;
+}
+
+.yh-input-row input {
+  flex: 1;
+  font-family: Tahoma, sans-serif;
+  font-size: 12px;
+  padding: 4px 6px;
+  border: 1px solid #7f9db9;
+}
+
+.yh-send-btn {
+  background: linear-gradient(180deg, #ffffff 0%, #dcdcdc 100%);
+  border: 1px solid #777;
+  font-family: Tahoma, sans-serif;
+  font-weight: bold;
+  font-size: 11px;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+/* Modal Đọc Chuyên Mục (Thời tiết, Biển số xe, 12 Chòm sao...) */
+.retro-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(12, 38, 68, 0.35);
+  z-index: 120;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.retro-modal-backdrop.open {
+  display: flex;
+}
+
+.retro-modal-box {
+  width: 480px;
+  max-width: 94vw;
+  background: #ffffff;
+  border: 2px solid #2b92e4;
+  box-shadow: 0 8px 25px rgba(0, 48, 96, 0.35);
+}
+
+.retro-modal-header {
+  height: 28px;
+  background: linear-gradient(180deg, #8cdeff 0%, #2498ec 55%, #55b9ff 100%);
+  color: #ffffff;
+  font-weight: bold;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-shadow: 0 1px 2px #095796;
+}
+
+.retro-modal-close {
+  background: #e84848;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 11px;
+  padding: 1px 6px;
+  cursor: pointer;
+}
+
+.retro-modal-content {
+  padding: 14px 16px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #1f395c;
+  max-height: 68vh;
+  overflow-y: auto;
+}
+
+.retro-lookup-input {
+  padding: 4px 7px;
+  border: 1px solid #68a8de;
+  font-family: Tahoma, sans-serif;
+  font-size: 12px;
+  margin-right: 6px;
+}

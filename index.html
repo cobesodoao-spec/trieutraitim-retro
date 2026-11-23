@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1024" />
+  <title>Triệu Trái Tim (trieutraitim.info) - Nghe Nhạc Tuyển Chọn &amp; Quà Tặng Âm Nhạc</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Hiệu ứng bông tuyết & nốt nhạc rơi nhè nhẹ -->
+  <div id="falling-fx" aria-hidden="true"></div>
+
+  <!-- Phần Banner & Thanh Menu đầu trang kiểu Portal 2008 (Có thể bấm thu gọn) -->
+  <header id="top-portal-wrapper" class="top-portal-wrapper">
+    <div class="retro-banner">
+      <div class="brand-logo">
+        <div class="heart-emblem" aria-hidden="true">♥</div>
+        <div class="brand-text">
+          <h1 id="brand-title">Triệu Trái Tim . Info</h1>
+          <p id="brand-subtitle">Kết nối triệu trái tim yêu nhạc Việt ★ Góc kỷ niệm thế hệ 8x - 9x</p>
+        </div>
+      </div>
+
+      <div class="banner-tools">
+        <div class="banner-mini-btns">
+          <a href="admin.html" class="retro-chip-btn" style="text-decoration:none;font-weight:bold;">⚙ Admin CP</a>
+          <button id="btn-toggle-fx" class="retro-chip-btn" type="button">❄ Tuyết &amp; Nhạc: Bật</button>
+          <button id="btn-toggle-banner" class="retro-chip-btn" type="button" title="Ẩn banner để xem đúng khung hình ảnh chụp gốc">▲ Thu gọn Banner</button>
+        </div>
+        <span style="font-size:11px;color:#145596;">♪ Trình duyệt khuyên dùng: IE 7.0 / Firefox 3.0 — Độ phân giải 1024x768</span>
+      </div>
+    </div>
+
+    <nav class="retro-nav-bar" aria-label="Menu chính">
+      <div class="retro-nav-links">
+        <a href="#home" class="active">Trang Chủ</a>
+        <span class="retro-nav-sep">|</span>
+        <a href="#music">Nghe Nhạc Chọn Lọc</a>
+        <span class="retro-nav-sep">|</span>
+        <a href="#gift" data-nav-action="gift">Quà Tặng Âm Nhạc</a>
+        <span class="retro-nav-sep">|</span>
+        <a href="#yh" data-nav-action="yh">Chat Yahoo!</a>
+        <span class="retro-nav-sep">|</span>
+        <a href="#compact" data-nav-action="compact">Chế Độ Ảnh Gốc</a>
+        <span class="retro-nav-sep">|</span>
+        <a href="admin.html" style="color:#ffffa8;">⚙ Quản Trị Nhạc (Admin)</a>
+      </div>
+      <div>♥ Chào mừng bạn ghé thăm góc nhạc xưa!</div>
+    </nav>
+  </header>
+
+  <!-- Bố cục 3 cột chuẩn giao diện trieutraitim.info -->
+  <div class="page-shell">
+    <!-- ==================== CỘT TRÁI ==================== -->
+    <aside class="sidebar-left" aria-label="Menu trái">
+      <!-- Hộp 1: Sách -->
+      <section class="side-box">
+        <div class="side-box-header">
+          <span class="spark">✳</span> : Tủ Sách Hay : <span class="spark">✳</span>
+        </div>
+        <ul id="left-books-list" class="side-list"></ul>
+      </section>
+
+      <!-- Hộp 2: Thông Tin -->
+      <section class="side-box">
+        <div class="side-box-header">
+          <span class="spark">✳</span> : Thông Tin : <span class="spark">✳</span>
+        </div>
+        <ul id="left-info-list" class="side-list"></ul>
+      </section>
+
+      <!-- Hộp 3: Liên Kết Nhanh -->
+      <section class="side-box">
+        <div class="side-box-header">
+          <span class="spark">✳</span> Liên Kết Nhanh <span class="spark">✳</span>
+        </div>
+        <div class="quick-link-body">
+          <select id="quick-link-select" class="retro-select" aria-label="Liên kết nhanh">
+            <option value="">(¯`Liên Kết Nhanh´¯)</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Hộp 4: Bộ đếm lượt truy cập hoài niệm -->
+      <section class="side-box">
+        <div class="side-box-header">
+          <span class="spark">✳</span> : Thống Kê : <span class="spark">✳</span>
+        </div>
+        <div class="hit-counter-body">
+          <div id="lcd-counter-box" class="lcd-counter" title="Lượt truy cập">
+            <span>0</span><span>1</span><span>8</span><span>9</span><span>4</span><span>2</span><span>0</span><span>8</span>
+          </div>
+          <div>Đang online: <b id="online-count-val">128</b> khách</div>
+        </div>
+      </section>
+    </aside>
+
+    <!-- ==================== CỘT GIỮA: PLAYER + PLAYLIST ==================== -->
+    <main class="center-main">
+      <!-- Trình phát nhạc giao diện Flash / Windows Media Player cổ điển -->
+      <section class="wmp-flash-player" aria-label="Trình phát nhạc">
+        <!-- Dòng chữ tím hồng chạy trên đỉnh Player -->
+        <div class="player-greeting-bar">
+          <span id="marquee-greeting" class="marquee-track">
+            Nửa Ngày Nửa Đêm Blog - Chúc bạn nghe nhạc vui vẻ
+          </span>
+        </div>
+
+        <!-- Màn hình LCD đen hiển thị bộ đếm 01:25 / 03:27 -->
+        <div class="player-lcd-bar">
+          <span id="lcd-time" class="lcd-time">01:25 / 03:27</span>
+          <span id="lcd-song-status" class="lcd-song-status">Ây ơi ấy à - Khang Luân</span>
+        </div>
+
+        <!-- Thanh trượt tiến độ bạc + xanh lá mạ bóng -->
+        <div class="player-seek-strip">
+          <div id="seek-groove" class="seek-groove" title="Bấm hoặc kéo để tua nhạc">
+            <div id="seek-fill" class="seek-fill"></div>
+            <div id="seek-knob" class="seek-knob"></div>
+          </div>
+        </div>
+
+        <!-- Thanh nút bấm bạc - xanh gương kiểu WMP 11 -->
+        <div class="player-controls-deck">
+          <div class="deck-left">
+            <!-- Nút Play / Pause lớn -->
+            <button id="btn-play" class="orb-btn orb-play" type="button" title="Phát / Tạm dừng">
+              <svg id="icon-play-svg" width="13" height="14" viewBox="0 0 14 14" fill="#1d3f7a">
+                <polygon points="3,1.8 12.2,7 3,12.2" />
+              </svg>
+              <svg id="icon-pause-svg" width="12" height="13" viewBox="0 0 12 13" fill="#1d3f7a" style="display:none;">
+                <rect x="2" y="2" width="3" height="9" rx="0.6" />
+                <rect x="7" y="2" width="3" height="9" rx="0.6" />
+              </svg>
+            </button>
+
+            <!-- Cụm nút Lùi bài (|◀) và Qua bài (▶|) -->
+            <div class="transport-pair">
+              <button id="btn-prev" class="orb-btn orb-sm" type="button" title="Bài trước">
+                <svg width="11" height="10" viewBox="0 0 12 10" fill="#1d3f7a">
+                  <rect x="1.5" y="1.5" width="1.8" height="7" />
+                  <polygon points="10.2,1.5 4,5 10.2,8.5" />
+                </svg>
+              </button>
+              <button id="btn-next" class="orb-btn orb-sm" type="button" title="Bài tiếp theo">
+                <svg width="11" height="10" viewBox="0 0 12 10" fill="#1d3f7a">
+                  <polygon points="1.8,1.5 8,5 1.8,8.5" />
+                  <rect x="8.7" y="1.5" width="1.8" height="7" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Nút Loa + Thanh trượt Volume màu xanh lá -->
+            <div class="volume-cluster">
+              <button id="btn-mute" class="orb-btn orb-sm" type="button" title="Bật / Tắt tiếng">
+                <svg id="icon-speaker-on" width="13" height="12" viewBox="0 0 14 12" fill="#2b3f63">
+                  <polygon points="1.5,4.2 4.5,4.2 7.8,1.5 7.8,10.5 4.5,7.8 1.5,7.8" />
+                  <path d="M9.6,3.5 C10.8,4.6 10.8,7.4 9.6,8.5" stroke="#2b3f63" stroke-width="1.3" fill="none" stroke-linecap="round" />
+                  <path d="M11.3,2 C13.2,3.8 13.2,8.2 11.3,10" stroke="#2b3f63" stroke-width="1.2" fill="none" stroke-linecap="round" />
+                </svg>
+                <svg id="icon-speaker-off" width="13" height="12" viewBox="0 0 14 12" fill="#8b2626" style="display:none;">
+                  <polygon points="1.5,4.2 4.5,4.2 7.8,1.5 7.8,10.5 4.5,7.8 1.5,7.8" />
+                  <line x1="9.5" y1="3.5" x2="13" y2="8.5" stroke="#b31b1b" stroke-width="1.6" />
+                  <line x1="13" y1="3.5" x2="9.5" y2="8.5" stroke="#b31b1b" stroke-width="1.6" />
+                </svg>
+              </button>
+
+              <div id="vol-groove" class="vol-groove" title="Âm lượng">
+                <div id="vol-fill" class="vol-fill"></div>
+                <div id="vol-knob" class="vol-knob"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tiện ích mở rộng nhỏ gọn: upload MP3 lưu luôn, lời bài hát, lặp lại, Admin -->
+          <div class="deck-right">
+            <input id="mp3-file-input" type="file" accept="audio/*" multiple style="display:none;" />
+            <button id="btn-upload-mp3" class="mini-wmp-btn" type="button" title="Upload nhanh file .mp3 lên danh sách nhạc">+ Upload MP3</button>
+            <button id="btn-lyrics-toggle" class="mini-wmp-btn" type="button" title="Hiện / Ẩn lời bài hát">Lời bài hát</button>
+            <button id="btn-repeat" class="mini-wmp-btn" type="button" title="Lặp lại 1 bài">↻ Lặp lại</button>
+            <a href="admin.html" class="mini-wmp-btn" style="text-decoration:none;" title="Mở trang Quản Trị Admin CP">⚙ Admin</a>
+            <button id="btn-restore-banner" class="mini-wmp-btn" type="button" style="display:none;" title="Hiện lại Banner đầu trang">▼ Banner</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Danh sách bài hát có thanh cuộn dọc bên phải -->
+      <section class="playlist-viewport" aria-label="Danh sách bài hát">
+        <ol id="playlist-list" class="playlist-list"></ol>
+      </section>
+
+      <!-- Hộp Lời bài hát (Bấm nút "Lời bài hát" để mở hoặc đóng) -->
+      <section id="lyrics-panel" class="retro-extra-panel" style="display:none;">
+        <div class="retro-extra-header">
+          <span id="lyrics-song-title">♪ Lời bài hát</span>
+          <span style="font-weight:normal;font-size:11px;">Nguồn: Triệu Trái Tim Lyrics</span>
+        </div>
+        <div id="lyrics-body" class="retro-extra-body"></div>
+      </section>
+
+      <footer class="retro-footer">
+        <div id="footer-line-1"><b>Triệu Trái Tim (trieutraitim.info)</b> — Phiên bản phục dựng giao diện Web Nghe Nhạc Xưa (2007 - 2009)</div>
+        <div id="footer-line-2">Bấm vào bất kỳ bài hát nào để nghe nhạc, hoặc vào <a href="admin.html" style="color:#0b56a8;font-weight:bold;">Bảng Quản Trị Admin CP</a> để thêm nhạc, sửa playlist &amp; upload MP3!</div>
+      </footer>
+    </main>
+
+    <!-- ==================== CỘT PHẢI ==================== -->
+    <aside class="sidebar-right" aria-label="Menu phải">
+      <!-- Hộp Khám Phá -->
+      <section class="side-box">
+        <div class="side-box-header">
+          <span class="spark">✳</span> : Khám Phá : <span class="spark">✳</span>
+        </div>
+        <ul id="right-discover-list" class="side-list"></ul>
+      </section>
+
+      <!-- Hộp Liên Hệ Yahoo! Messenger kinh điển -->
+      <section class="side-box">
+        <div class="side-box-header">
+          <span class="spark">✳</span> - Liên Hệ - <span class="spark">✳</span>
+        </div>
+        <div class="yahoo-box-body">
+          <a id="yh-btn-online" href="#yahoo-online" class="yh-badge" title="Nhắn tin qua Yahoo! Messenger">
+            <svg class="yh-smiley" viewBox="0 0 28 28">
+              <defs>
+                <radialGradient id="yhYellow" cx="35%" cy="30%" r="70%">
+                  <stop offset="0%" stop-color="#fff59d" />
+                  <stop offset="55%" stop-color="#ffca28" />
+                  <stop offset="100%" stop-color="#d68900" />
+                </radialGradient>
+              </defs>
+              <circle cx="14" cy="14" r="11.5" fill="url(#yhYellow)" stroke="#7a4f00" stroke-width="1.2" />
+              <ellipse cx="10.2" cy="11" rx="1.6" ry="2.2" fill="#2b1900" />
+              <ellipse cx="17.8" cy="11" rx="1.6" ry="2.2" fill="#2b1900" />
+              <path d="M8.5,16 C10.2,20.5 17.8,20.5 19.5,16 Z" fill="#ffffff" stroke="#5c3600" stroke-width="1" />
+            </svg>
+            <span class="yh-badge-text">
+              <span class="yh-online-title">I'm Online</span>
+              <span class="yh-online-sub">Send me a message</span>
+            </span>
+          </a>
+
+          <div class="yh-nick">
+            <span class="yh-prefix">YH!</span>
+            <span id="yh-nick-name" class="yh-name">Con mòe kêu meo<br/>meo</span>
+          </div>
+
+          <a id="yh-btn-offline" href="#yahoo-offline" class="yh-badge" title="Để lại lời nhắn offline">
+            <svg class="yh-smiley" viewBox="0 0 28 28">
+              <defs>
+                <radialGradient id="yhGrey" cx="35%" cy="30%" r="70%">
+                  <stop offset="0%" stop-color="#f5f5f5" />
+                  <stop offset="60%" stop-color="#bdbdbd" />
+                  <stop offset="100%" stop-color="#757575" />
+                </radialGradient>
+              </defs>
+              <circle cx="14" cy="14" r="11.5" fill="url(#yhGrey)" stroke="#555555" stroke-width="1.2" />
+              <path d="M8.2,11.5 Q10.2,13.2 12.2,11.5" stroke="#333" stroke-width="1.4" fill="none" />
+              <path d="M15.8,11.5 Q17.8,13.2 19.8,11.5" stroke="#333" stroke-width="1.4" fill="none" />
+              <line x1="10" y1="18" x2="18" y2="18" stroke="#444" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+            <span class="yh-badge-text">
+              <span class="yh-offline-title">Not Online</span>
+              <span class="yh-offline-sub">right now</span>
+            </span>
+          </a>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- Cửa sổ Chat Yahoo! Messenger 9.0 Hoài Niệm -->
+  <div id="yh-chat-window" class="yh-chat-window" role="dialog" aria-label="Yahoo! Messenger">
+    <div class="yh-win-titlebar">
+      <span id="yh-win-title-text">😊 con_moe_keu_meo_meo - Instant Message</span>
+      <button id="yh-close-btn" class="yh-win-close" type="button" title="Đóng">✕</button>
+    </div>
+    <div id="yh-chat-history" class="yh-chat-history"></div>
+    <div class="yh-toolbar">
+      <button id="yh-buzz-btn" class="yh-buzz-btn" type="button" title="Rung màn hình BUZZ!">⚡ BUZZ!</button>
+      <button class="yh-emo-btn" type="button" data-emo=":D">:D</button>
+      <button class="yh-emo-btn" type="button" data-emo="=))">=))</button>
+      <button class="yh-emo-btn" type="button" data-emo=":((">:((</button>
+      <button class="yh-emo-btn" type="button" data-emo=":x">:x</button>
+    </div>
+    <div class="yh-input-row">
+      <input id="yh-chat-input" type="text" placeholder="Nhập tin nhắn Yahoo..." />
+      <button id="yh-send-btn" class="yh-send-btn" type="button">Gửi</button>
+    </div>
+  </div>
+
+  <!-- Hộp thoại đọc nội dung các mục cột trái / cột phải -->
+  <div id="retro-modal" class="retro-modal-backdrop" role="dialog" aria-modal="true">
+    <div class="retro-modal-box">
+      <div class="retro-modal-header">
+        <span id="retro-modal-title">Chuyên Mục Triệu Trái Tim</span>
+        <button id="retro-modal-close" class="retro-modal-close" type="button">✕ Đóng</button>
+      </div>
+      <div id="retro-modal-content" class="retro-modal-content"></div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="store.js"></script>
+  <script src="synth.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
