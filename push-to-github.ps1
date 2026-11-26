@@ -59,6 +59,7 @@ $filesToUpload = @(
   "data.js",
   "store.js",
   "synth.js",
+  "buzz.mp3",
   "app.js",
   "admin.html",
   "admin.css",
