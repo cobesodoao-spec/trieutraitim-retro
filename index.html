@@ -23,7 +23,7 @@
 
       <div class="banner-tools">
         <div class="banner-mini-btns">
-          <a href="admin.html" class="retro-chip-btn" style="text-decoration:none;font-weight:bold;">⚙ Admin CP</a>
+          <a href="admin.html" class="retro-chip-btn admin-only-ui" style="display:none;text-decoration:none;font-weight:bold;">⚙ Admin CP</a>
           <button id="btn-toggle-fx" class="retro-chip-btn" type="button">❄ Tuyết &amp; Nhạc: Bật</button>
           <button id="btn-toggle-banner" class="retro-chip-btn" type="button" title="Ẩn banner để xem đúng khung hình ảnh chụp gốc">▲ Thu gọn Banner</button>
         </div>
@@ -42,8 +42,8 @@
         <a href="#yh" data-nav-action="yh">Chat Yahoo!</a>
         <span class="retro-nav-sep">|</span>
         <a href="#compact" data-nav-action="compact">Chế Độ Ảnh Gốc</a>
-        <span class="retro-nav-sep">|</span>
-        <a href="admin.html" style="color:#ffffa8;">⚙ Quản Trị Nhạc (Admin)</a>
+        <span class="retro-nav-sep admin-only-ui" style="display:none;">|</span>
+        <a href="admin.html" class="admin-only-ui" style="display:none;color:#ffffa8;">⚙ Quản Trị Nhạc</a>
       </div>
       <div>♥ Chào mừng bạn ghé thăm góc nhạc xưa!</div>
     </nav>
@@ -172,13 +172,13 @@
             </div>
           </div>
 
-          <!-- Tiện ích mở rộng nhỏ gọn: upload MP3 lưu luôn, lời bài hát, lặp lại, Admin -->
+          <!-- Tiện ích mở rộng nhỏ gọn: lời bài hát, lặp lại (công cụ Admin ẩn hoàn toàn với khách thường) -->
           <div class="deck-right">
             <input id="mp3-file-input" type="file" accept="audio/*" multiple style="display:none;" />
-            <button id="btn-upload-mp3" class="mini-wmp-btn" type="button" title="Upload nhanh file .mp3 lên danh sách nhạc">+ Upload MP3</button>
+            <button id="btn-upload-mp3" class="mini-wmp-btn admin-only-ui" type="button" style="display:none;" title="Upload nhanh file .mp3 lên danh sách nhạc">+ Upload MP3</button>
             <button id="btn-lyrics-toggle" class="mini-wmp-btn" type="button" title="Hiện / Ẩn lời bài hát">Lời bài hát</button>
             <button id="btn-repeat" class="mini-wmp-btn" type="button" title="Lặp lại 1 bài">↻ Lặp lại</button>
-            <a href="admin.html" class="mini-wmp-btn" style="text-decoration:none;" title="Mở trang Quản Trị Admin CP">⚙ Admin</a>
+            <a href="admin.html" class="mini-wmp-btn admin-only-ui" style="display:none;text-decoration:none;" title="Mở trang Quản Trị Admin CP">⚙ Admin</a>
             <button id="btn-restore-banner" class="mini-wmp-btn" type="button" style="display:none;" title="Hiện lại Banner đầu trang">▼ Banner</button>
           </div>
         </div>
@@ -200,7 +200,7 @@
 
       <footer class="retro-footer">
         <div id="footer-line-1"><b>Triệu Trái Tim (trieutraitim.info)</b> — Phiên bản phục dựng giao diện Web Nghe Nhạc Xưa (2007 - 2009)</div>
-        <div id="footer-line-2">Bấm vào bất kỳ bài hát nào để nghe nhạc, hoặc vào <a href="admin.html" style="color:#0b56a8;font-weight:bold;">Bảng Quản Trị Admin CP</a> để thêm nhạc, sửa playlist &amp; upload MP3!</div>
+        <div id="footer-line-2">Chúc các bạn có những giây phút thư giãn ấm áp bên những giai điệu kỷ niệm ♥</div>
       </footer>
     </main>
 

@@ -321,13 +321,24 @@
       yhTitleEl.textContent = `😊 ${st.yahooId || "con_moe_keu_meo_meo"} - Instant Message`;
     }
 
-    // Chân trang
+    // Chân trang (Ẩn hoàn toàn mọi liên kết Admin với người nghe bình thường)
     const f1 = document.getElementById("footer-line-1");
     const f2 = document.getElementById("footer-line-2");
     if (f1 && st.footerLine1) f1.textContent = st.footerLine1;
-    if (f2 && st.footerLine2) {
-      f2.innerHTML = `${escapeHtml(st.footerLine2)} — <a href="admin.html" style="color:#0b56a8;font-weight:bold;">[⚙ Mở Admin CP]</a>`;
+    if (f2) {
+      const cleanLine2 = (st.footerLine2 && !st.footerLine2.includes("Admin CP"))
+        ? st.footerLine2
+        : "Chúc các bạn có những giây phút thư giãn ấm áp bên những giai điệu kỷ niệm ♥";
+      f2.textContent = cleanLine2;
     }
+  }
+
+  // Chỉ hiện nút Admin / Upload MP3 trên trang chủ KHI chủ web đã đăng nhập Admin
+  function syncAdminVisibility() {
+    const isAdmin = window.RetroStore.isAdminLoggedIn();
+    document.querySelectorAll(".admin-only-ui").forEach((el) => {
+      el.style.display = isAdmin ? "" : "none";
+    });
   }
 
   function renderSidebars() {
@@ -533,14 +544,14 @@
       <p style="background:#f5faff;border-left:3px solid #3598ec;padding:8px 10px;">
         "Hạnh phúc đôi khi không nằm ở những điều lớn lao, mà ở khoảnh khắc ta ngồi bên chiếc máy tính CRT, bật một bản nhạc quen thuộc trên <i>trieutraitim.info</i>, nhâm nhi tách trà nóng và gửi một dòng tin nhắn Yahoo cho người bạn phương xa..."
       </p>
-      <p><i>Bạn có thể chỉnh sửa nội dung bài viết của mục này trong trang Admin CP!</i></p>`;
+      <p><i>Trích tuyển tập Ebook &amp; Truyện ngắn sưu tầm thời Blog 360.</i></p>`;
   }
 
   function buildDiscoverContent(title) {
     return `<p><b>Khám phá chuyên đề: ${escapeHtml(title)}</b></p>
-      <p>Đây là một trong những chuyên mục bài viết kèm ảnh nổi tiếng ở cột phải của <b>trieutraitim.info</b> xưa.</p>
+      <p>Đây là một trong những chuyên mục bài viết kèm ảnh nổi tiếng ở cột phải của <b>trieutraitim.info</b> xưa (tổng hợp chuyện lạ thế giới, 7 kỳ quan mới, 12 chòm sao và tranh ảo giác).</p>
       <div style="padding:8px;background:#eef8ff;border:1px dashed #69b8f7;">
-        ✨ <b>Mẹo quản trị:</b> Vào <b>⚙ Admin CP → Menu &amp; Chuyên Mục</b> để viết nội dung riêng cho mục <i>"${escapeHtml(title)}"</i>!
+        ✨ <b>Góc kỷ niệm:</b> Hồi xưa mạng ADSL còn chậm, mỗi lần bấm xem bài viết đều vừa chờ tải ảnh vừa nghe trọn vẹn những bản hit của Khánh Phương, Đông Nhi, WanBi Tuấn Anh!
       </div>`;
   }
 
@@ -710,11 +721,20 @@
   // ========================================================================
   // Khởi động & Đồng bộ Real-time với Admin CP
   // ========================================================================
+  // Phím tắt bí mật cho Webmaster (Ctrl + Shift + A -> Mở trang AdminCP)
+  window.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.shiftKey && (e.key === "A" || e.key === "a")) {
+      e.preventDefault();
+      window.location.href = "admin.html";
+    }
+  });
+
   async function bootstrap() {
     const loaded = await window.RetroStore.loadDB();
     siteDB = loaded.db;
     songs = siteDB.songs || [];
 
+    syncAdminVisibility();
     applySiteSettings();
     renderSidebars();
     initYahooWelcome();
@@ -739,8 +759,9 @@
     updateLcdStatus(false);
   }
 
-  // Khi Admin CP lưu thay đổi ở tab khác, tự động cập nhật giao diện mà không làm gián đoạn nhạc đang phát!
+  // Khi Admin CP lưu thay đổi hoặc đăng nhập/đăng xuất ở tab khác, tự động cập nhật giao diện!
   window.RetroStore.onSync(async () => {
+    syncAdminVisibility();
     const currentPlayingId = songs[activeIndex] ? songs[activeIndex].id : null;
     const wasPlaying = engine.isPlaying;
 
@@ -748,6 +769,7 @@
     siteDB = loaded.db;
     songs = siteDB.songs || [];
 
+    syncAdminVisibility();
     applySiteSettings();
     renderSidebars();
 

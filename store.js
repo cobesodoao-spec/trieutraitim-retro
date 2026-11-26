@@ -38,7 +38,7 @@
         hitCounter: "01894208",
         onlineCount: 128,
         footerLine1: "Triệu Trái Tim (trieutraitim.info) — Phiên bản phục dựng giao diện Web Nghe Nhạc Xưa (2007 - 2009)",
-        footerLine2: "Bấm vào bất kỳ bài hát nào để nghe nhạc, hoặc vào Admin CP để thêm bài hát & upload MP3 mới!"
+        footerLine2: "Chúc các bạn có những giây phút thư giãn ấm áp bên những giai điệu kỷ niệm ♥"
       },
       songs: JSON.parse(JSON.stringify(window.RETRO_SONGS || [])),
       leftBooks: (window.LEFT_BOOKS || []).map((label, idx) => ({
@@ -355,9 +355,7 @@
       const j = await res.json().catch(() => null);
       if (j && j.ok && j.engine === "php") {
         phpBackendCache = true;
-        if (j.loggedIn) {
-          sessionStorage.setItem(AUTH_SESSION_KEY, "1");
-        }
+        setAdminLoggedIn(Boolean(j.loggedIn), false);
         return true;
       }
       phpBackendCache = false;
@@ -873,23 +871,35 @@
   function onSync(callback) {
     if (syncChannel) {
       syncChannel.addEventListener("message", (e) => {
-        if (e.data && e.data.type === "db-updated") {
+        if (e.data && (e.data.type === "db-updated" || e.data.type === "auth-updated")) {
           callback();
         }
       });
     }
     window.addEventListener("storage", (e) => {
-      if (e.key === STORAGE_KEY) callback();
+      if (e.key === STORAGE_KEY || e.key === AUTH_SESSION_KEY) callback();
     });
   }
 
   function isAdminLoggedIn() {
-    return sessionStorage.getItem(AUTH_SESSION_KEY) === "1";
+    try {
+      return localStorage.getItem(AUTH_SESSION_KEY) === "1";
+    } catch (_) {
+      return sessionStorage.getItem(AUTH_SESSION_KEY) === "1";
+    }
   }
 
-  function setAdminLoggedIn(flag) {
+  function setAdminLoggedIn(flag, notify = true) {
+    try {
+      if (flag) localStorage.setItem(AUTH_SESSION_KEY, "1");
+      else localStorage.removeItem(AUTH_SESSION_KEY);
+    } catch (_) {}
     if (flag) sessionStorage.setItem(AUTH_SESSION_KEY, "1");
     else sessionStorage.removeItem(AUTH_SESSION_KEY);
+
+    if (notify && syncChannel) {
+      syncChannel.postMessage({ type: "auth-updated", timestamp: Date.now() });
+    }
   }
 
   window.RetroStore = {
